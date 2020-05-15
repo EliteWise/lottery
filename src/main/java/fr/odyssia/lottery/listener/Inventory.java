@@ -1,4 +1,4 @@
-package fr.odyssia.lottery;
+package fr.odyssia.lottery.listener;
 
 import fr.odyssia.lottery.util.Constants;
 import org.bukkit.Bukkit;

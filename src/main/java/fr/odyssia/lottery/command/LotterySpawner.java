@@ -1,4 +1,4 @@
-package fr.odyssia.lottery;
+package fr.odyssia.lottery.command;
 
 import fr.odyssia.lottery.util.Constants;
 import org.bukkit.ChatColor;
@@ -10,7 +10,7 @@ import org.bukkit.entity.EntityType;
 import org.bukkit.entity.Player;
 import org.bukkit.entity.Villager;
 
-public class LotteryCommand implements CommandExecutor {
+public class LotterySpawner implements CommandExecutor {
 
     @Override
     public boolean onCommand(CommandSender sender, Command command, String label, String[] args) {
@@ -22,7 +22,6 @@ public class LotteryCommand implements CommandExecutor {
             villager.setInvulnerable(true);
             villager.setCustomName(ChatColor.YELLOW + Constants.LOTTERY_VILLAGER_NAME);
             villager.setCustomNameVisible(true);
-
         }
             return false;
         }
