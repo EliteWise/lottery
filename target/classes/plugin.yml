@@ -1,0 +1,11 @@
+name: Lottery
+version: 1.0-SNAPSHOT
+main: fr.odyssia.lottery.Main
+api-version: 1.13
+authors:
+  - Eliteman
+  - PieTech
+commands:
+  lottery:
+    aliases: [lt]
+    description: "Main command used to spawn lottery."
