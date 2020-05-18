@@ -43,6 +43,7 @@ public class Inventory implements Listener {
         Block block = e.getClickedBlock();
 
         if(block instanceof EnderChest) {
+            e.setCancelled(true);
             org.bukkit.inventory.Inventory fragmentInventory = Bukkit.createInventory(null, 45, Constants.FRAGMENT_INVENTORY_NAME);
             player.openInventory(fragmentInventory);
         }
