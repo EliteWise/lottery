@@ -24,7 +24,7 @@ public class LotterySpawner implements CommandExecutor {
             villager.setInvulnerable(true);
             villager.setCustomName(ChatColor.YELLOW + Constants.LOTTERY_VILLAGER_NAME);
             villager.setCustomNameVisible(true);
-            Location blockloc = p.getLocation().add(1,0,0);
+            Location blockloc = p.getLocation().add(2,0,0);
             if (!blockloc.getBlock().getType().equals(Material.AIR)) {
                 blockloc.getBlock().setType(Material.ENDER_CHEST);
             } else {
