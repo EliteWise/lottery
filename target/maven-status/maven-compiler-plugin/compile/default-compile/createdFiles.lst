@@ -1,0 +1,8 @@
+fr\odyssia\lottery\util\Fragment.class
+fr\odyssia\lottery\LotteryPlayer.class
+fr\odyssia\lottery\command\LotterySpawner.class
+fr\odyssia\lottery\RandomSystem.class
+fr\odyssia\lottery\data\JsonRequest.class
+fr\odyssia\lottery\Main.class
+fr\odyssia\lottery\util\Constants.class
+fr\odyssia\lottery\listener\Inventory.class

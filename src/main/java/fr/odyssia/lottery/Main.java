@@ -1,7 +1,7 @@
 package fr.odyssia.lottery;
 
 import fr.odyssia.lottery.command.LotterySpawner;
-import fr.odyssia.lottery.data.YamlRequest;
+import fr.odyssia.lottery.data.JsonRequest;
 import fr.odyssia.lottery.listener.Inventory;
 import fr.odyssia.lottery.util.Constants;
 import org.bukkit.Bukkit;
@@ -10,16 +10,16 @@ import org.bukkit.plugin.java.JavaPlugin;
 
 public final class Main extends JavaPlugin {
 
-    public YamlRequest yamlRequest;
+    public JsonRequest yamlRequest;
 
     @Override
     public void onEnable() {
         // Plugin startup logic
-        yamlRequest = new YamlRequest(this);
-        yamlRequest.createFile();
+        yamlRequest = new JsonRequest(this);
+        yamlRequest.createFolder();
 
         PluginManager pluginManager = Bukkit.getPluginManager();
-        pluginManager.registerEvents(new Inventory(), this);
+        pluginManager.registerEvents(new Inventory(this), this);
 
         getCommand(Constants.COMMAND_NAME).setExecutor(new LotterySpawner());
     }

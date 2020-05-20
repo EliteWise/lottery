@@ -1,5 +1,7 @@
 package fr.odyssia.lottery.listener;
 
+import fr.odyssia.lottery.Main;
+import fr.odyssia.lottery.data.JsonRequest;
 import fr.odyssia.lottery.util.Constants;
 import org.bukkit.Bukkit;
 import org.bukkit.Material;
@@ -10,11 +12,22 @@ import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
 import org.bukkit.event.block.Action;
+import org.bukkit.event.player.AsyncPlayerChatEvent;
 import org.bukkit.event.player.PlayerInteractEntityEvent;
 import org.bukkit.event.player.PlayerInteractEvent;
+import org.bukkit.event.player.PlayerJoinEvent;
 import org.bukkit.inventory.ItemStack;
 
+import java.io.IOException;
+
 public class Inventory implements Listener {
+
+    private Main main;
+    private JsonRequest jsonRequest = new JsonRequest(this.main);
+
+    public Inventory(Main main) {
+        this.main = main;
+    }
 
     // PNJ INTERACTION //
 
@@ -42,6 +55,19 @@ public class Inventory implements Listener {
             e.setCancelled(true);
             org.bukkit.inventory.Inventory fragmentInventory = Bukkit.createInventory(null, 54, Constants.FRAGMENT_INVENTORY_NAME);
             player.openInventory(fragmentInventory);
+        }
+    }
+
+    @EventHandler
+    public void onPlayerJoin(PlayerJoinEvent e) throws IOException {
+        Player player = e.getPlayer();
+        jsonRequest.createFileAccount(player);
+    }
+
+    @EventHandler
+    public void onWriteTokenInChat(AsyncPlayerChatEvent e) throws IOException {
+        if(e.getMessage().contains("token")) {
+            jsonRequest.addToken(e.getPlayer(), 1);
         }
     }
 
