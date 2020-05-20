@@ -9,6 +9,7 @@ import org.bukkit.block.Block;
 import org.bukkit.entity.Entity;
 import org.bukkit.entity.EntityType;
 import org.bukkit.entity.Player;
+import org.bukkit.entity.Villager;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
 import org.bukkit.event.block.Action;
@@ -41,6 +42,7 @@ public class Inventory implements Listener {
             inv.setItem(22, apple);
             player.openInventory(inv);
         }
+
     }
 
     // LOTTERY INVENTORY //
