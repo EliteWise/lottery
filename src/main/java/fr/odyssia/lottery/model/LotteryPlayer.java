@@ -1,4 +1,4 @@
-package fr.odyssia.lottery;
+package fr.odyssia.lottery.model;
 
 public class LotteryPlayer {
 
