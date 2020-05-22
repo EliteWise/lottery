@@ -6,13 +6,11 @@ import fr.odyssia.lottery.util.Constants;
 import org.bukkit.Bukkit;
 import org.bukkit.Material;
 import org.bukkit.block.Block;
-import org.bukkit.entity.Entity;
-import org.bukkit.entity.EntityType;
-import org.bukkit.entity.Player;
-import org.bukkit.entity.Villager;
+import org.bukkit.entity.*;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
 import org.bukkit.event.block.Action;
+import org.bukkit.event.inventory.InventoryClickEvent;
 import org.bukkit.event.player.AsyncPlayerChatEvent;
 import org.bukkit.event.player.PlayerInteractEntityEvent;
 import org.bukkit.event.player.PlayerInteractEvent;
@@ -36,16 +34,35 @@ public class Inventory implements Listener {
     public void onClickOnVillager(PlayerInteractEntityEvent e) {
         Player player = e.getPlayer();
         Entity entity = e.getRightClicked();
+
         if (entity.getType() == EntityType.VILLAGER && entity.getCustomName().contains(Constants.LOTTERY_VILLAGER_NAME)) {
             org.bukkit.inventory.Inventory inv = Bukkit.createInventory(null, 45, Constants.LOTTERY_VILLAGER_NAME);
-            ItemStack apple = new ItemStack(Material.ACACIA_BUTTON); //exemple
+            ItemStack apple = new ItemStack(Material.SUNFLOWER); //exemple
             inv.setItem(22, apple);
+
+
             player.openInventory(inv);
         }
 
     }
 
     // LOTTERY INVENTORY //
+    @EventHandler
+    public void onClickInInventory(InventoryClickEvent e) {
+        Player player = (Player) e.getWhoClicked();
+        ItemStack item =  e.getCurrentItem();
+
+
+
+
+        if (player.getType() == EntityType.PLAYER && item.getType() == Material.SUNFLOWER){
+
+
+
+        }
+
+    }
+
 
     // FRAGMENT INVENTORY //
 
