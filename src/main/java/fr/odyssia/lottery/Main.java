@@ -29,9 +29,6 @@ public final class Main extends JavaPlugin {
         pluginManager.registerEvents(new Inventory(this), this);
 
         getCommand(Constants.COMMAND_NAME).setExecutor(new LotterySpawner());
-
-        ymlConfigRequest.assignItems();
-        ymlConfigRequest.assignItemsTest();
     }
 
     @Override
