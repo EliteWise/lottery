@@ -3,9 +3,8 @@ package fr.odyssia.lottery.data;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.node.ObjectNode;
-import fr.odyssia.lottery.LotteryPlayer;
+import fr.odyssia.lottery.model.LotteryPlayer;
 import fr.odyssia.lottery.Main;
-import fr.odyssia.lottery.util.Fragment;
 import org.bukkit.Bukkit;
 import org.bukkit.configuration.file.FileConfiguration;
 import org.bukkit.configuration.file.YamlConfiguration;
@@ -75,8 +74,8 @@ public class JsonRequest {
         return tokens.intValue();
     }
 
-    public void addFragment(Player player, Fragment fragment) throws IOException { }
+    public void addFragment(Player player, String fragment) throws IOException { }
 
-    public void removeFragment(Player player, Fragment fragment) throws IOException { }
+    public void removeFragment(Player player, String fragment) throws IOException { }
 
 }

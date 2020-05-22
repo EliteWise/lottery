@@ -9,7 +9,6 @@ import org.bukkit.block.Block;
 import org.bukkit.entity.Entity;
 import org.bukkit.entity.EntityType;
 import org.bukkit.entity.Player;
-import org.bukkit.entity.Villager;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
 import org.bukkit.event.block.Action;
@@ -65,6 +64,8 @@ public class Inventory implements Listener {
         Player player = e.getPlayer();
         jsonRequest.createFileAccount(player);
     }
+
+    // Simple Example to add a Token //
 
     @EventHandler
     public void onWriteTokenInChat(AsyncPlayerChatEvent e) throws IOException {

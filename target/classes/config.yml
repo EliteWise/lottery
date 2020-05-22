@@ -1,0 +1,13 @@
+# Animations are calculated in seconds.
+
+animation_duration: 3
+
+animation_speed: 1
+
+# These items will be display in lottery inventory and in the Ender Chest
+# Keys are rewards and values are the number of fragments to get this item
+
+items:
+  GOLD_BLOCK: 2
+  DIAMOND: 6
+  APPLE: 1
