@@ -11,7 +11,7 @@ import org.bukkit.plugin.java.JavaPlugin;
 
 public final class Main extends JavaPlugin {
 
-    public JsonRequest yamlRequest;
+    public JsonRequest jsonRequest;
     public YmlConfiguration ymlConfigRequest;
 
     @Override
@@ -21,14 +21,13 @@ public final class Main extends JavaPlugin {
         saveDefaultConfig();
 
         ymlConfigRequest = new YmlConfiguration(this);
-
-        yamlRequest = new JsonRequest(this);
-        yamlRequest.createFolder();
+        jsonRequest = new JsonRequest(this);
+        jsonRequest.createPlayersFolder();
 
         PluginManager pluginManager = Bukkit.getPluginManager();
         pluginManager.registerEvents(new Inventory(this), this);
 
-        getCommand(Constants.COMMAND_NAME).setExecutor(new LotterySpawner());
+        getCommand(Constants.COMMAND_NAME).setExecutor(new LotterySpawner(this));
     }
 
     @Override

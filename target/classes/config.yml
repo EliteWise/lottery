@@ -1,8 +1,10 @@
 # Animations are calculated in seconds.
 
-animation_duration: 3
+animation-duration: 3
 
-animation_speed: 1
+animation-speed: 1
+
+npc-profession: LIBRARIAN
 
 # These items will be display in lottery inventory and in the Ender Chest
 # Keys are rewards and values are the number of fragments to get this item

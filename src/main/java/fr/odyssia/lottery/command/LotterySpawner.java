@@ -1,5 +1,6 @@
 package fr.odyssia.lottery.command;
 
+import fr.odyssia.lottery.Main;
 import fr.odyssia.lottery.util.Constants;
 import org.bukkit.ChatColor;
 import org.bukkit.Location;
@@ -16,6 +17,12 @@ import org.bukkit.entity.Villager;
 
 public class LotterySpawner implements CommandExecutor {
 
+    public Main main;
+
+    public LotterySpawner(Main main) {
+        this.main = main;
+    }
+
     @Override
     public boolean onCommand(CommandSender sender, Command command, String label, String[] args) {
 
@@ -28,12 +35,13 @@ public class LotterySpawner implements CommandExecutor {
             if (enderChestLoc.getBlock().getType() == Material.AIR) {
 
                 Villager villager = (Villager) p.getWorld().spawnEntity(loc, EntityType.VILLAGER);
+                villager.setProfession(Villager.Profession.valueOf(main.getConfig().getString("npc-profession", "LIBRARIAN").toUpperCase()));
+                villager.setAdult();
                 villager.setRotation(loc.getYaw(), loc.getPitch());
                 villager.setInvulnerable(true);
                 villager.setAI(false);
                 villager.setCustomName(ChatColor.YELLOW + Constants.LOTTERY_VILLAGER_NAME);
                 villager.setCustomNameVisible(true);
-
 
                 enderChestLoc.getBlock().setType(Material.ENDER_CHEST);
 
@@ -43,7 +51,7 @@ public class LotterySpawner implements CommandExecutor {
                 enderChest.setBlockData(data);
 
             } else {
-                p.sendMessage("§cThere are blocks around you, you can't place Lottery here. §7(Need 3 AIR blocks around)");
+                p.sendMessage("§cThere are less than 3 AIR blocks around you, you can't place Lottery here.");
             }
         }
 

@@ -36,6 +36,7 @@ public class Inventory implements Listener {
         Player player = e.getPlayer();
         Entity entity = e.getRightClicked();
         if (entity.getType() == EntityType.VILLAGER && entity.getCustomName().contains(Constants.LOTTERY_VILLAGER_NAME)) {
+            e.setCancelled(true);
             org.bukkit.inventory.Inventory inv = Bukkit.createInventory(null, 45, Constants.LOTTERY_VILLAGER_NAME);
             ItemStack apple = new ItemStack(Material.ACACIA_BUTTON); //exemple
             inv.setItem(22, apple);
@@ -52,7 +53,7 @@ public class Inventory implements Listener {
     public void onClickOnEnderChest(PlayerInteractEvent e) {
         Player player = e.getPlayer();
         Block block = e.getClickedBlock();
-        if(e.getAction() == Action.RIGHT_CLICK_BLOCK && block.getType() == Material.ENDER_CHEST) {
+        if (e.getAction() == Action.RIGHT_CLICK_BLOCK && block.getType() == Material.ENDER_CHEST) {
             e.setCancelled(true);
             org.bukkit.inventory.Inventory fragmentInventory = Bukkit.createInventory(null, 54, Constants.FRAGMENT_INVENTORY_NAME);
             player.openInventory(fragmentInventory);
@@ -69,7 +70,7 @@ public class Inventory implements Listener {
 
     @EventHandler
     public void onWriteTokenInChat(AsyncPlayerChatEvent e) throws IOException {
-        if(e.getMessage().contains("token")) {
+        if (e.getMessage().contains("token")) {
             jsonRequest.addToken(e.getPlayer(), 1);
         }
     }

@@ -16,7 +16,7 @@ import java.io.IOException;
 public class JsonRequest {
 
     private Main main;
-    private String mainPath = Bukkit.getServer().getPluginManager().getPlugin("Lottery").getDataFolder().getPath() + "/";
+    private String mainPath = Bukkit.getServer().getPluginManager().getPlugin("Lottery").getDataFolder().getPath() + "/players/";
 
     // create object mapper instance
     private static final ObjectMapper mapper = new ObjectMapper();
@@ -25,7 +25,7 @@ public class JsonRequest {
         this.main = main;
     }
 
-    public void createFolder() {
+    public void createPlayersFolder() {
         boolean success = new File(mainPath).mkdirs();
 
         if(!success) {
