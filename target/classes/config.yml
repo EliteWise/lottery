@@ -4,7 +4,13 @@ animation-duration: 3
 
 animation-speed: 1
 
+# List of available professions:
+# ARMORER | BUTCHER | CARTOGRAPHER | CLERIC | FARMER | FISHERMAN | FLETCHER | LEATHERWORKER | LIBRARIAN | MASON | NITWIT | SHEPHERD | TOOLSMITH | WEAPONSMITH
+# (NONE to set default NPC)
+
 npc-profession: LIBRARIAN
+
+npc-name: "Lottery"
 
 # These items will be display in lottery inventory and in the Ender Chest
 # Keys are rewards and values are the number of fragments to get this item

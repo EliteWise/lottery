@@ -24,7 +24,6 @@ import java.io.IOException;
 public class Inventory implements Listener {
 
     private Main main;
-    private JsonRequest jsonRequest = new JsonRequest(this.main);
 
 
     public Inventory(Main main) {
@@ -85,15 +84,18 @@ public class Inventory implements Listener {
     @EventHandler
     public void onPlayerJoin(PlayerJoinEvent e) throws IOException {
         Player player = e.getPlayer();
+        JsonRequest jsonRequest = new JsonRequest(main);
         jsonRequest.createFileAccount(player);
+        jsonRequest.addFragment(player, jsonRequest.getJsonNode(player), "APPLE");
     }
 
     // Simple Example to add a Token //
 
     @EventHandler
     public void onWriteTokenInChat(AsyncPlayerChatEvent e) throws IOException {
-        if (e.getMessage().contains("token")) {
-            jsonRequest.addToken(e.getPlayer(), 1);
+        if (e.getMessage().contains("apple")) {
+            JsonRequest jsonRequest = new JsonRequest(main);
+
         }
     }
 
