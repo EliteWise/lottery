@@ -12,6 +12,8 @@ public class YmlConfiguration {
         this.main = main;
     }
 
+    public YmlConfiguration() {}
+
     public int getAnimationDuration() {
         return main.getConfig().getInt("animation_duration");
     }
@@ -24,9 +26,14 @@ public class YmlConfiguration {
         return main.getConfig().getConfigurationSection("items").getKeys(false);
     }
 
-    public java.util.Collection<Object> getFragments() {
+    public Map<String, Object> getFragments() {
         Map<String, Object> map = main.getConfig().getConfigurationSection("items").getValues(false);
         Map<String, Object> linkedHashMap = new LinkedHashMap<>(map);
-        return linkedHashMap.values();
+        return linkedHashMap;
+    }
+
+    public int getFragments(String fragment) {
+        int selectedFragment = (int) main.getConfig().getConfigurationSection("items").get(fragment);
+        return selectedFragment;
     }
 }

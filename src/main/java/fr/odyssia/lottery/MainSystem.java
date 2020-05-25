@@ -1,13 +1,11 @@
 package fr.odyssia.lottery;
 
 import fr.odyssia.lottery.data.YmlConfiguration;
-import org.bukkit.Bukkit;
 import org.bukkit.Material;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.Inventory;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.scheduler.BukkitRunnable;
-
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Random;
@@ -35,6 +33,7 @@ public class MainSystem  extends BukkitRunnable {
         Set<String> itemsList = ymlConfiguration.getItems();
         int itemrandom = random.nextInt(itemsList.size());
 
+
         YmlConfiguration ymlConfiguration = new YmlConfiguration(main);
 
 
@@ -58,5 +57,6 @@ public class MainSystem  extends BukkitRunnable {
             inventory.setItem(22, new ItemStack(Material.getMaterial(list.get(itemrandom))));
             inventory.setItem(23, new ItemStack(Material.getMaterial(list.get(itemrandom))));
         }
+
     }
 }

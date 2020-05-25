@@ -4,12 +4,27 @@ animation-duration: 3
 
 animation-speed: 1
 
+# List of available professions:
+# ARMORER | BUTCHER | CARTOGRAPHER | CLERIC | FARMER | FISHERMAN | FLETCHER | LEATHERWORKER | LIBRARIAN | MASON | NITWIT | SHEPHERD | TOOLSMITH | WEAPONSMITH
+# (NONE to set default NPC)
+
 npc-profession: LIBRARIAN
+
+npc-name: "Lottery"
 
 # These items will be display in lottery inventory and in the Ender Chest
 # Keys are rewards and values are the number of fragments to get this item
 
 items:
-  GOLD_BLOCK: 2
-  DIAMOND: 6
-  APPLE: 1
+  BLAZE_POWDER: 1
+  BLAZE_ROD: 1
+  FISHING_ROD: 1
+  ELYTRA: 1
+  ENDER_PEARL: 1
+  GOLDEN_APPLE: 1
+  GOLD_INGOT: 1
+  DIAMOND: 2
+  DIAMOND_AXE: 2
+  ENCHANTING_TABLE: 3
+  EMERALD: 4
+  DIAMOND_HORSE_ARMOR: 4
