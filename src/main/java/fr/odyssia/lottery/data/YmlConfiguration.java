@@ -31,4 +31,9 @@ public class YmlConfiguration {
         Map<String, Object> linkedHashMap = new LinkedHashMap<>(map);
         return linkedHashMap;
     }
+
+    public int getFragments(String fragment) {
+        int selectedFragment = (int) main.getConfig().getConfigurationSection("items").get(fragment);
+        return selectedFragment;
+    }
 }

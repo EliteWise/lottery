@@ -60,23 +60,18 @@ public class JsonRequest {
         }
     }
 
-    public JsonNode getJsonNode(Player player) throws IOException {
+    public void addToken(Player player, int tokens) throws IOException {
         JsonNode root = mapper.readTree(new File(mainPath + player.getUniqueId() + ".json"));
-        return root;
-    }
-
-    public void addToken(Player player, JsonNode root, int tokens) throws IOException {
         // Update value
         ((ObjectNode) root).put(Constants.JSON_TOKEN_FIELD, root.get(Constants.JSON_TOKEN_FIELD).intValue() + tokens);
-
         // Write new value into json file
         mapper.writeValue(new File(mainPath + player.getUniqueId() + ".json"), root);
     }
 
-    public void removeToken(Player player, JsonNode root, int tokens) throws IOException {
+    public void removeToken(Player player, int tokens) throws IOException {
+        JsonNode root = mapper.readTree(new File(mainPath + player.getUniqueId() + ".json"));
         // Update value
         ((ObjectNode) root).put(Constants.JSON_TOKEN_FIELD, root.get(Constants.JSON_TOKEN_FIELD).intValue() - tokens);
-
         // Write new value into json file
         mapper.writeValue(new File(mainPath + player.getUniqueId() + ".json"), root);
     }
@@ -87,7 +82,14 @@ public class JsonRequest {
         return tokens.intValue();
     }
 
-    public void addFragment(Player player, JsonNode root, String fragment) throws IOException {
+    public int getFragments(Player player, String item) throws IOException {
+        JsonNode jsonNode = mapper.readTree(new File(mainPath + player.getUniqueId() + ".json"));
+        JsonNode fragments = jsonNode.get(Constants.JSON_FRAGMENT_FIELD).findValue(item);
+        return fragments.intValue();
+    }
+
+    public void addFragment(Player player, String fragment) throws IOException {
+        JsonNode root = mapper.readTree(new File(mainPath + player.getUniqueId() + ".json"));
         // Update value
         ObjectNode fragmentNode = (ObjectNode) root.path(Constants.JSON_FRAGMENT_FIELD);
         fragmentNode.put(fragment, fragmentNode.path(fragment).intValue() + 1);
@@ -96,7 +98,8 @@ public class JsonRequest {
         mapper.writeValue(new File(mainPath + player.getUniqueId() + ".json"), root);
     }
 
-    public void removeFragment(Player player, JsonNode root, String fragment) throws IOException {
+    public void removeFragment(Player player, String fragment) throws IOException {
+        JsonNode root = mapper.readTree(new File(mainPath + player.getUniqueId() + ".json"));
         // Update value
         ObjectNode fragmentNode = (ObjectNode) root.path(Constants.JSON_FRAGMENT_FIELD);
         fragmentNode.put(fragment, fragmentNode.path(fragment).intValue() - 1);
