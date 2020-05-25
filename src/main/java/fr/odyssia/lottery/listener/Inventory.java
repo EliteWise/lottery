@@ -1,6 +1,7 @@
 package fr.odyssia.lottery.listener;
 
 import fr.odyssia.lottery.Main;
+import fr.odyssia.lottery.MainSystem;
 import fr.odyssia.lottery.data.JsonRequest;
 import fr.odyssia.lottery.data.YmlConfiguration;
 import fr.odyssia.lottery.util.Constants;
@@ -54,7 +55,7 @@ public class Inventory implements Listener {
     public void onClickInInventory(InventoryClickEvent e) throws IOException {
         Player player = (Player) e.getWhoClicked();
         ItemStack item = e.getCurrentItem();
-
+        org.bukkit.inventory.Inventory inventory = e.getInventory();
         if(item == null) return;
 
         if(e.getView().getTitle().equalsIgnoreCase(Constants.LOTTERY_INVENTORY_NAME)) {
@@ -63,6 +64,9 @@ public class Inventory implements Listener {
                 if (jsonRequest.getTokens(player)>0){
                     jsonRequest.removeToken(player, main.getConfig().getInt("payment-token", 1));
                     e.getInventory().remove(Material.SUNFLOWER);
+                    MainSystem mainSystem = new MainSystem(main,inventory);
+                    YmlConfiguration ymlConfiguration = new YmlConfiguration(main);
+                    mainSystem.runTaskTimer(main,ymlConfiguration.getAnimationSpeed(),0);
                 }
             }
         } else if(e.getView().getTitle().equalsIgnoreCase(Constants.FRAGMENT_INVENTORY_NAME)) {
