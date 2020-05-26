@@ -1,8 +1,7 @@
 package fr.odyssia.lottery.command;
 
 import fr.odyssia.lottery.Main;
-import fr.odyssia.lottery.util.Constants;
-import org.bukkit.ChatColor;
+import fr.odyssia.lottery.data.YmlConfiguration;
 import org.bukkit.Location;
 import org.bukkit.Material;
 import org.bukkit.block.Block;
@@ -34,13 +33,15 @@ public class LotterySpawner implements CommandExecutor {
 
             if (enderChestLoc.getBlock().getType() == Material.AIR) {
 
+                YmlConfiguration ymlConfiguration = new YmlConfiguration(main);
+
                 Villager villager = (Villager) p.getWorld().spawnEntity(loc, EntityType.VILLAGER);
-                villager.setProfession(Villager.Profession.valueOf(main.getConfig().getString("npc-profession", "LIBRARIAN").toUpperCase()));
+                villager.setProfession(Villager.Profession.valueOf(ymlConfiguration.getProfession()));
                 villager.setAdult();
                 villager.setRotation(loc.getYaw(), loc.getPitch());
                 villager.setInvulnerable(true);
                 villager.setAI(false);
-                villager.setCustomName(ChatColor.YELLOW + Constants.LOTTERY_VILLAGER_NAME);
+                villager.setCustomName(ymlConfiguration.getNpcName());
                 villager.setCustomNameVisible(true);
 
                 enderChestLoc.getBlock().setType(Material.ENDER_CHEST);

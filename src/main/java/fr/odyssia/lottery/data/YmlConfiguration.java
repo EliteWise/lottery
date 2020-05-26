@@ -15,12 +15,16 @@ public class YmlConfiguration {
     public YmlConfiguration() {}
 
     public int getAnimationDuration() {
-        return main.getConfig().getInt("animation_duration");
+        return main.getConfig().getInt("animation-duration");
     }
 
     public int getAnimationSpeed() {
-        return main.getConfig().getInt("animation_speed");
+        return main.getConfig().getInt("animation-speed");
     }
+
+    public String getNpcName() { return main.getConfig().getString("npc-name"); }
+
+    public String getProfession() { return main.getConfig().getString("npc-profession", "LIBRARIAN").toUpperCase(); }
 
     public Set<String> getItems() {
         return main.getConfig().getConfigurationSection("items").getKeys(false);

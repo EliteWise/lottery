@@ -64,7 +64,7 @@ public class Inventory implements Listener {
                 if (jsonRequest.getTokens(player)>0){
                     jsonRequest.removeToken(player, main.getConfig().getInt("payment-token", 1));
                     e.getInventory().remove(Material.SUNFLOWER);
-                    MainSystem mainSystem = new MainSystem(main,inventory);
+                    MainSystem mainSystem = new MainSystem(main, player, inventory);
                     YmlConfiguration ymlConfiguration = new YmlConfiguration(main);
                     mainSystem.runTaskTimer(main,ymlConfiguration.getAnimationSpeed(),0);
                 }
