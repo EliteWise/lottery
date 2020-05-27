@@ -1,8 +1,8 @@
-# Animations are calculated in seconds.
+# Animations are calculated in ticks.
 
-animation-duration: 3
+animation-duration: 9
 
-animation-speed: 1
+animation-speed: 7
 
 # List of available professions:
 # ARMORER | BUTCHER | CARTOGRAPHER | CLERIC | FARMER | FISHERMAN | FLETCHER | LEATHERWORKER | LIBRARIAN | MASON | NITWIT | SHEPHERD | TOOLSMITH | WEAPONSMITH
@@ -11,6 +11,10 @@ animation-speed: 1
 npc-profession: LIBRARIAN
 
 npc-name: "Lottery"
+
+# Type of item to play (Item used can be anything)
+
+token-type: HEART_OF_THE_SEA
 
 # These items will be display in lottery inventory and in the Ender Chest
 # Keys are rewards and values are the number of fragments to get this item

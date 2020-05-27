@@ -5,6 +5,7 @@ import fr.odyssia.lottery.data.YmlConfiguration;
 import org.bukkit.Location;
 import org.bukkit.Material;
 import org.bukkit.block.Block;
+import org.bukkit.block.BlockFace;
 import org.bukkit.block.data.Directional;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandExecutor;
@@ -28,19 +29,26 @@ public class LotterySpawner implements CommandExecutor {
         if (sender instanceof Player) {
 
             Player p = (Player) sender;
-            Location loc = p.getLocation();
-            Location enderChestLoc = p.getLocation().add(2, 0, 0);
+            Location pLoc = p.getLocation();
+            double x = pLoc.getX();
+            double y = pLoc.getY();
+            double z = pLoc.getZ();
+            BlockFace pFacing = p.getFacing();
+            Location enderChestLoc = p.getLocation().add(pFacing == BlockFace.NORTH || pFacing == BlockFace.SOUTH ? 2 : 0, 0, pFacing == BlockFace.WEST || pFacing == BlockFace.EAST ? 2 : 0);
 
             if (enderChestLoc.getBlock().getType() == Material.AIR) {
 
                 YmlConfiguration ymlConfiguration = new YmlConfiguration(main);
 
-                Villager villager = (Villager) p.getWorld().spawnEntity(loc, EntityType.VILLAGER);
+                Location pFinalLoc = new Location(p.getWorld(), Math.floor(x) + 0.5, y, Math.floor(z) + 0.5, pLoc.getYaw(), pLoc.getPitch());
+
+                Villager villager = (Villager) p.getWorld().spawnEntity(pFinalLoc, EntityType.VILLAGER);
                 villager.setProfession(Villager.Profession.valueOf(ymlConfiguration.getProfession()));
                 villager.setAdult();
-                villager.setRotation(loc.getYaw(), loc.getPitch());
+                villager.setRotation(pFinalLoc.getYaw(), pFinalLoc.getPitch());
                 villager.setInvulnerable(true);
                 villager.setAI(false);
+                villager.setSilent(true);
                 villager.setCustomName(ymlConfiguration.getNpcName());
                 villager.setCustomNameVisible(true);
 

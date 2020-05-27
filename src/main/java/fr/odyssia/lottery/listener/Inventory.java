@@ -5,9 +5,11 @@ import fr.odyssia.lottery.MainSystem;
 import fr.odyssia.lottery.data.JsonRequest;
 import fr.odyssia.lottery.data.YmlConfiguration;
 import fr.odyssia.lottery.util.Constants;
+import fr.odyssia.lottery.util.ItemCreator;
 import org.bukkit.Bukkit;
 import org.bukkit.Material;
 import org.bukkit.block.Block;
+import org.bukkit.enchantments.Enchantment;
 import org.bukkit.entity.Entity;
 import org.bukkit.entity.EntityType;
 import org.bukkit.entity.Player;
@@ -35,15 +37,19 @@ public class Inventory implements Listener {
     // PNJ INTERACTION //
 
     @EventHandler
-    public void onClickOnVillager(PlayerInteractEntityEvent e) {
+    public void onClickOnVillager(PlayerInteractEntityEvent e) throws IOException {
         Player player = e.getPlayer();
         Entity entity = e.getRightClicked();
 
-        if (entity.getType() == EntityType.VILLAGER && entity.getCustomName().contains(Constants.LOTTERY_VILLAGER_NAME)) {
+        YmlConfiguration ymlConfiguration = new YmlConfiguration(main);
+
+        if (entity.getType() == EntityType.VILLAGER && entity.getCustomName().equalsIgnoreCase(ymlConfiguration.getNpcName())) {
             e.setCancelled(true);
-            org.bukkit.inventory.Inventory inv = Bukkit.createInventory(null, 45, Constants.LOTTERY_VILLAGER_NAME);
-            ItemStack apple = new ItemStack(Material.SUNFLOWER); //exemple
-            inv.setItem(22, apple);
+            org.bukkit.inventory.Inventory inv = Bukkit.createInventory(null, 45, Constants.LOTTERY_INVENTORY_NAME);
+
+            JsonRequest jsonRequest = new JsonRequest(main);
+            ItemCreator itemCreator = new ItemCreator();
+            inv.setItem(22, itemCreator.create(Material.SUNFLOWER, ("§eTokens: §f§l" + getTokens(player, ymlConfiguration)), Enchantment.LUCK));
 
             player.openInventory(inv);
         }
@@ -51,6 +57,31 @@ public class Inventory implements Listener {
     }
 
     // LOTTERY INVENTORY //
+
+    public void tokenCheck(Player player, YmlConfiguration ymlConfiguration, JsonRequest jsonRequest) throws IOException {
+        for(ItemStack tokenItem : player.getInventory().getContents()) {
+            if(tokenItem == null) {
+                continue;
+            } else if(tokenItem.getType() == Material.getMaterial(ymlConfiguration.getTokenType())) {
+                tokenItem.setAmount(tokenItem.getAmount() - 1);
+                jsonRequest.addToken(player, 1);
+                return;
+            }
+        }
+    }
+
+    public int getTokens(Player player, YmlConfiguration ymlConfiguration) {
+        int amount = 0;
+        for(ItemStack tokenItem : player.getInventory().getContents()) {
+            if(tokenItem == null) {
+                continue;
+            } else if(tokenItem.getType() == Material.getMaterial(ymlConfiguration.getTokenType())) {
+                amount += tokenItem.getAmount();
+            }
+        }
+        return amount;
+    }
+
     @EventHandler
     public void onClickInInventory(InventoryClickEvent e) throws IOException {
         Player player = (Player) e.getWhoClicked();
@@ -60,15 +91,24 @@ public class Inventory implements Listener {
 
         if(e.getView().getTitle().equalsIgnoreCase(Constants.LOTTERY_INVENTORY_NAME)) {
             if (item.getType() == Material.SUNFLOWER){
+
+                YmlConfiguration ymlConfiguration = new YmlConfiguration(main);
                 JsonRequest jsonRequest = new JsonRequest(main);
-                if (jsonRequest.getTokens(player)>0){
+
+                tokenCheck(player, ymlConfiguration, jsonRequest);
+
+                if (jsonRequest.getTokens(player) > 0){
                     jsonRequest.removeToken(player, main.getConfig().getInt("payment-token", 1));
                     e.getInventory().remove(Material.SUNFLOWER);
-                    MainSystem mainSystem = new MainSystem(main, player, inventory);
-                    YmlConfiguration ymlConfiguration = new YmlConfiguration(main);
-                    mainSystem.runTaskTimer(main,ymlConfiguration.getAnimationSpeed(),0);
+
+                    MainSystem mainSystem = new MainSystem(main, player, inventory, ymlConfiguration.getAnimationDuration());
+                    mainSystem.runTaskTimer(main, 10, ymlConfiguration.getAnimationSpeed());
+                } else {
+                    player.closeInventory();
+                    player.sendMessage("§cYou don't have enough tokens to play.");
                 }
             }
+            e.setCancelled(true);
         } else if(e.getView().getTitle().equalsIgnoreCase(Constants.FRAGMENT_INVENTORY_NAME)) {
             YmlConfiguration ymlConfiguration = new YmlConfiguration(main);
             JsonRequest jsonRequest = new JsonRequest(main);
@@ -86,7 +126,7 @@ public class Inventory implements Listener {
                     }
                 }
             }
-
+            e.setCancelled(true);
         }
 
     }

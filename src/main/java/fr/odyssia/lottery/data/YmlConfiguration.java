@@ -30,6 +30,8 @@ public class YmlConfiguration {
         return main.getConfig().getConfigurationSection("items").getKeys(false);
     }
 
+    public String getTokenType() { return main.getConfig().getString("token-type"); }
+
     public Map<String, Object> getFragments() {
         Map<String, Object> map = main.getConfig().getConfigurationSection("items").getValues(false);
         Map<String, Object> linkedHashMap = new LinkedHashMap<>(map);

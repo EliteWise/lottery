@@ -3,6 +3,8 @@ fr\odyssia\lottery\command\LotterySpawner.class
 fr\odyssia\lottery\model\LotteryPlayer.class
 fr\odyssia\lottery\data\JsonRequest.class
 fr\odyssia\lottery\MainSystem.class
+fr\odyssia\lottery\util\ItemCreator.class
 fr\odyssia\lottery\Main.class
+fr\odyssia\lottery\MainSystem$1.class
 fr\odyssia\lottery\util\Constants.class
 fr\odyssia\lottery\listener\Inventory.class
