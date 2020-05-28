@@ -3,10 +3,7 @@ package fr.odyssia.lottery;
 import fr.odyssia.lottery.data.JsonRequest;
 import fr.odyssia.lottery.data.YmlConfiguration;
 import fr.odyssia.lottery.util.InventoryFill;
-import org.bukkit.Bukkit;
-import org.bukkit.Location;
-import org.bukkit.Material;
-import org.bukkit.Sound;
+import org.bukkit.*;
 import org.bukkit.block.BlockFace;
 import org.bukkit.entity.Entity;
 import org.bukkit.entity.Item;
@@ -75,13 +72,14 @@ public class Animation extends BukkitRunnable {
 
                     BlockFace eFacing = entities.getFacing();
                     Location eLoc = entities.getLocation();
+                    World eWorld = entities.getWorld();
                     double x = eLoc.getX();
                     double y = eLoc.getY() + 2;
                     double z = eLoc.getZ();
                     droppedReward = player.getWorld().dropItemNaturally(new Location(entities.getWorld(), Math.floor(x), y, Math.floor(z), eLoc.getYaw(), eLoc.getPitch()).add(eFacing == BlockFace.NORTH || eFacing == BlockFace.SOUTH ? 2.1 : 0, 1, eFacing == BlockFace.WEST || eFacing == BlockFace.EAST ? 2.1 : 0), rewardFragment);
                     droppedReward.setVelocity(new Vector());
                     droppedReward.setPickupDelay(Integer.MAX_VALUE);
-
+                    eWorld.spawnParticle(Particle.FIREWORKS_SPARK, eLoc, 40, 0,0,0, 0.2);
                     Bukkit.getScheduler().runTaskLater(main, new Runnable() {
                         @Override
                         public void run() {
