@@ -2,6 +2,7 @@ package fr.odyssia.lottery;
 
 import fr.odyssia.lottery.data.JsonRequest;
 import fr.odyssia.lottery.data.YmlConfiguration;
+import fr.odyssia.lottery.util.InventoryFill;
 import org.bukkit.Bukkit;
 import org.bukkit.Location;
 import org.bukkit.Material;
@@ -23,7 +24,7 @@ import java.util.Random;
 import java.util.Set;
 
 
-public class MainSystem extends BukkitRunnable {
+public class Animation extends BukkitRunnable {
 
     private fr.odyssia.lottery.Main main;
 
@@ -33,7 +34,7 @@ public class MainSystem extends BukkitRunnable {
     private ItemStack rewardFragment;
     private Item droppedReward;
 
-    public MainSystem(Main main, Player player, Inventory inventory, int animationDuration) {
+    public Animation(Main main, Player player, Inventory inventory, int animationDuration) {
         this.main = main;
         this.player = player;
         this.inventory = inventory;
@@ -49,8 +50,17 @@ public class MainSystem extends BukkitRunnable {
         if (count == animationDuration) {
             cancel();
 
-            player.closeInventory();
-            player.getWorld().playSound(player.getLocation(), Sound.UI_TOAST_CHALLENGE_COMPLETE, 0.6f, 0.3f);
+            InventoryFill inventoryFill = new InventoryFill(inventory);
+            inventoryFill.fillSidesWithItem(new ItemStack(Material.YELLOW_STAINED_GLASS_PANE));
+
+            Bukkit.getScheduler().runTaskLater(main, new Runnable() {
+                @Override
+                public void run() {
+                    player.closeInventory();
+                    player.playSound(player.getLocation(), Sound.UI_TOAST_CHALLENGE_COMPLETE, 0.6f, 0.3f);
+                }
+            }, 20 * 1);
+
 
             JsonRequest jsonRequest = new JsonRequest(main);
             try {
@@ -81,7 +91,7 @@ public class MainSystem extends BukkitRunnable {
                 }
             }
         } else {
-            player.getWorld().playSound(player.getLocation(), Sound.BLOCK_NOTE_BLOCK_CHIME, 0.6f, soundLevel += 0.1);
+            player.playSound(player.getLocation(), Sound.BLOCK_NOTE_BLOCK_CHIME, 0.6f, soundLevel += 0.1);
 
             YmlConfiguration ymlConfiguration = new YmlConfiguration(main);
             Random random = new Random();

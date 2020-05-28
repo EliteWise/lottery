@@ -1,7 +1,7 @@
 package fr.odyssia.lottery.listener;
 
 import fr.odyssia.lottery.Main;
-import fr.odyssia.lottery.MainSystem;
+import fr.odyssia.lottery.Animation;
 import fr.odyssia.lottery.data.JsonRequest;
 import fr.odyssia.lottery.data.YmlConfiguration;
 import fr.odyssia.lottery.util.Constants;
@@ -47,9 +47,8 @@ public class Inventory implements Listener {
             e.setCancelled(true);
             org.bukkit.inventory.Inventory inv = Bukkit.createInventory(null, 45, Constants.LOTTERY_INVENTORY_NAME);
 
-            JsonRequest jsonRequest = new JsonRequest(main);
             ItemCreator itemCreator = new ItemCreator();
-            inv.setItem(22, itemCreator.create(Material.SUNFLOWER, ("§eTokens: §f§l" + getTokens(player, ymlConfiguration)), Enchantment.LUCK));
+            inv.setItem(22, itemCreator.create(Material.getMaterial(ymlConfiguration.getTokenType()), ("§eTokens: §f§l" + getTokens(player, ymlConfiguration)), Enchantment.LUCK));
 
             player.openInventory(inv);
         }
@@ -90,10 +89,11 @@ public class Inventory implements Listener {
         if(item == null) return;
 
         if(e.getView().getTitle().equalsIgnoreCase(Constants.LOTTERY_INVENTORY_NAME)) {
-            if (item.getType() == Material.SUNFLOWER){
 
-                YmlConfiguration ymlConfiguration = new YmlConfiguration(main);
-                JsonRequest jsonRequest = new JsonRequest(main);
+            YmlConfiguration ymlConfiguration = new YmlConfiguration(main);
+            JsonRequest jsonRequest = new JsonRequest(main);
+
+            if (item.getType() == Material.getMaterial(ymlConfiguration.getTokenType())){
 
                 tokenCheck(player, ymlConfiguration, jsonRequest);
 
@@ -101,7 +101,7 @@ public class Inventory implements Listener {
                     jsonRequest.removeToken(player, main.getConfig().getInt("payment-token", 1));
                     e.getInventory().remove(Material.SUNFLOWER);
 
-                    MainSystem mainSystem = new MainSystem(main, player, inventory, ymlConfiguration.getAnimationDuration());
+                    Animation mainSystem = new Animation(main, player, inventory, ymlConfiguration.getAnimationDuration());
                     mainSystem.runTaskTimer(main, 10, ymlConfiguration.getAnimationSpeed());
                 } else {
                     player.closeInventory();
@@ -118,7 +118,8 @@ public class Inventory implements Listener {
             for(String materialName : ymlConfiguration.getItems()) {
                 if(itemName.equals(materialName)) {
                     System.out.println(jsonRequest.getFragments(player, itemName));
-                    if(jsonRequest.getFragments(player, itemName) == ymlConfiguration.getFragments(itemName)) {
+                    if((jsonRequest.getFragments(player, itemName) != 0) && (jsonRequest.getFragments(player, itemName) % ymlConfiguration.getFragments(itemName) == 0)) {
+                        item.setAmount(1);
                         player.getInventory().addItem(item);
                         player.closeInventory();
                         player.sendMessage("§aCongratulations ! §e§l" + itemName.replace("_", " ") + " §aadded to your inventory.");
@@ -147,7 +148,8 @@ public class Inventory implements Listener {
             JsonRequest jsonRequest = new JsonRequest(main);
             int index = 0;
             for(String material : ymlConfiguration.getItems()) {
-                ItemStack item = new ItemStack(Material.getMaterial(material), jsonRequest.getFragments(player, material) + 1);
+                ItemStack item = new ItemStack(jsonRequest.getFragments(player, material) == 0 ? Material.BARRIER : Material.getMaterial(material),
+                        jsonRequest.getFragments(player, material) == 0 ? 1 : jsonRequest.getFragments(player, material));
                 ItemMeta itemMeta = item.getItemMeta();
                 itemMeta.setDisplayName("Fragment " + material);
                 item.setItemMeta(itemMeta);

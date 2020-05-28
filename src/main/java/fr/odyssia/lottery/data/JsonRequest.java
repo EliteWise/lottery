@@ -102,7 +102,9 @@ public class JsonRequest {
         JsonNode root = mapper.readTree(new File(mainPath + player.getUniqueId() + ".json"));
         // Update value
         ObjectNode fragmentNode = (ObjectNode) root.path(Constants.JSON_FRAGMENT_FIELD);
-        fragmentNode.put(fragment, fragmentNode.path(fragment).intValue() - 1);
+
+        YmlConfiguration ymlConfiguration = new YmlConfiguration(main);
+        fragmentNode.put(fragment, fragmentNode.path(fragment).intValue() - ymlConfiguration.getFragments(fragment));
 
         // Write new value into json file
         mapper.writeValue(new File(mainPath + player.getUniqueId() + ".json"), root);
