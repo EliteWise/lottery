@@ -1,7 +1,7 @@
 package fr.odyssia.lottery.listener;
 
-import fr.odyssia.lottery.Main;
 import fr.odyssia.lottery.Animation;
+import fr.odyssia.lottery.Main;
 import fr.odyssia.lottery.data.JsonRequest;
 import fr.odyssia.lottery.data.YmlConfiguration;
 import fr.odyssia.lottery.util.Constants;
@@ -17,7 +17,6 @@ import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
 import org.bukkit.event.block.Action;
 import org.bukkit.event.inventory.InventoryClickEvent;
-import org.bukkit.event.player.AsyncPlayerChatEvent;
 import org.bukkit.event.player.PlayerInteractEntityEvent;
 import org.bukkit.event.player.PlayerInteractEvent;
 import org.bukkit.event.player.PlayerJoinEvent;
@@ -25,6 +24,8 @@ import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.ItemMeta;
 
 import java.io.IOException;
+import java.util.ArrayList;
+import java.util.List;
 
 public class Inventory implements Listener {
 
@@ -113,13 +114,19 @@ public class Inventory implements Listener {
             YmlConfiguration ymlConfiguration = new YmlConfiguration(main);
             JsonRequest jsonRequest = new JsonRequest(main);
 
-            String itemName = item.getItemMeta().getDisplayName().replace("Fragment ", "");
+            String itemName = item.getType().name();
+            int playerFragments = jsonRequest.getFragments(player, itemName);
+            int limitFragments = ymlConfiguration.getFragments(itemName);
 
             for(String materialName : ymlConfiguration.getItems()) {
                 if(itemName.equals(materialName)) {
-                    System.out.println(jsonRequest.getFragments(player, itemName));
-                    if((jsonRequest.getFragments(player, itemName) != 0) && (jsonRequest.getFragments(player, itemName) % ymlConfiguration.getFragments(itemName) == 0)) {
+                    if((playerFragments != 0) && (playerFragments % limitFragments == 0) || (playerFragments > limitFragments)) {
                         item.setAmount(1);
+
+                        ItemMeta itemMeta = item.getItemMeta();
+                        itemMeta.setLore(null);
+                        item.setItemMeta(itemMeta);
+
                         player.getInventory().addItem(item);
                         player.closeInventory();
                         player.sendMessage("§aCongratulations ! §e§l" + itemName.replace("_", " ") + " §aadded to your inventory.");
@@ -146,12 +153,21 @@ public class Inventory implements Listener {
 
             YmlConfiguration ymlConfiguration = new YmlConfiguration(main);
             JsonRequest jsonRequest = new JsonRequest(main);
+
             int index = 0;
+
             for(String material : ymlConfiguration.getItems()) {
-                ItemStack item = new ItemStack(jsonRequest.getFragments(player, material) == 0 ? Material.BARRIER : Material.getMaterial(material),
-                        jsonRequest.getFragments(player, material) == 0 ? 1 : jsonRequest.getFragments(player, material));
+                int playerFragments = jsonRequest.getFragments(player, material);
+
+                ItemStack item = new ItemStack(playerFragments == 0 ? Material.BARRIER : Material.getMaterial(material),
+                        playerFragments == 0 ? 1 : playerFragments);
                 ItemMeta itemMeta = item.getItemMeta();
-                itemMeta.setDisplayName("Fragment " + material);
+
+                List<String> description = new ArrayList<>();
+                description.add("§eFragments: §f" + playerFragments + "§e/§f" + ymlConfiguration.getFragments(material));
+                description.add("§7Click to receive");
+
+                itemMeta.setLore(description);
                 item.setItemMeta(itemMeta);
                 fragmentInventory.setItem(index++, item);
             }
@@ -164,16 +180,6 @@ public class Inventory implements Listener {
         JsonRequest jsonRequest = new JsonRequest(main);
         jsonRequest.createFileAccount(player);
         jsonRequest.addFragment(player, "BLAZE_POWDER");
-    }
-
-    // Simple Example to add a Token //
-
-    @EventHandler
-    public void onWriteTokenInChat(AsyncPlayerChatEvent e) throws IOException {
-        if (e.getMessage().contains("POWDER")) {
-            JsonRequest jsonRequest = new JsonRequest(main);
-
-        }
     }
 
 }
