@@ -32,7 +32,7 @@ public class JsonRequest {
         boolean success = new File(mainPath).mkdirs();
 
         if(!success) {
-            System.out.println("An Error has occurred!");
+            System.out.println("Folder 'players' already initialized!");
         }
     }
 
@@ -78,14 +78,12 @@ public class JsonRequest {
 
     public int getTokens(Player player) throws IOException {
         JsonNode jsonNode = mapper.readTree(new File(mainPath + player.getUniqueId() + ".json"));
-        JsonNode tokens = jsonNode.get(Constants.JSON_TOKEN_FIELD);
-        return tokens.intValue();
+        return jsonNode.get(Constants.JSON_TOKEN_FIELD).intValue();
     }
 
     public int getFragments(Player player, String item) throws IOException {
         JsonNode jsonNode = mapper.readTree(new File(mainPath + player.getUniqueId() + ".json"));
-        JsonNode fragments = jsonNode.get(Constants.JSON_FRAGMENT_FIELD).findValue(item);
-        return fragments.intValue();
+        return jsonNode.get(Constants.JSON_FRAGMENT_FIELD).findValue(item).intValue();
     }
 
     public void addFragment(Player player, String fragment) throws IOException {
@@ -104,7 +102,7 @@ public class JsonRequest {
         ObjectNode fragmentNode = (ObjectNode) root.path(Constants.JSON_FRAGMENT_FIELD);
 
         YmlConfiguration ymlConfiguration = new YmlConfiguration(main);
-        fragmentNode.put(fragment, fragmentNode.path(fragment).intValue() - ymlConfiguration.getFragments(fragment));
+        fragmentNode.put(fragment, fragmentNode.path(fragment).intValue() - ymlConfiguration.getFragment(fragment));
 
         // Write new value into json file
         mapper.writeValue(new File(mainPath + player.getUniqueId() + ".json"), root);

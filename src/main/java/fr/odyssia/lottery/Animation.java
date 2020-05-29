@@ -47,17 +47,10 @@ public class Animation extends BukkitRunnable {
         if (count == animationDuration) {
             cancel();
 
+            // Fill border of the inventory at the end of the Animation //
+
             InventoryFill inventoryFill = new InventoryFill(inventory);
             inventoryFill.fillSidesWithItem(new ItemStack(Material.YELLOW_STAINED_GLASS_PANE));
-
-            Bukkit.getScheduler().runTaskLater(main, new Runnable() {
-                @Override
-                public void run() {
-                    player.closeInventory();
-                    player.playSound(player.getLocation(), Sound.UI_TOAST_CHALLENGE_COMPLETE, 0.6f, 0.3f);
-                }
-            }, 20 * 1);
-
 
             JsonRequest jsonRequest = new JsonRequest(main);
             try {
@@ -66,6 +59,8 @@ public class Animation extends BukkitRunnable {
                 e.printStackTrace();
             }
 
+            // Spawn floating item on the EnderChest, depending on the position of the villager //
+
             List<Entity> nearEntities = player.getWorld().getEntities();
             for (Entity entities : nearEntities) {
                 if (entities instanceof Villager && entities.getLocation().distance(player.getLocation()) <= 4) {
@@ -73,13 +68,28 @@ public class Animation extends BukkitRunnable {
                     BlockFace eFacing = entities.getFacing();
                     Location eLoc = entities.getLocation();
                     World eWorld = entities.getWorld();
+
                     double x = eLoc.getX();
                     double y = eLoc.getY() + 2;
                     double z = eLoc.getZ();
+
                     droppedReward = player.getWorld().dropItemNaturally(new Location(entities.getWorld(), Math.floor(x), y, Math.floor(z), eLoc.getYaw(), eLoc.getPitch()).add(eFacing == BlockFace.NORTH || eFacing == BlockFace.SOUTH ? 2.1 : 0, 1, eFacing == BlockFace.WEST || eFacing == BlockFace.EAST ? 2.1 : 0), rewardFragment);
                     droppedReward.setVelocity(new Vector());
                     droppedReward.setPickupDelay(Integer.MAX_VALUE);
-                    eWorld.spawnParticle(Particle.FIREWORKS_SPARK, eLoc, 40, 0,0,0, 0.2);
+
+                    // Close inventory 1 second later to let the fill border animation during 1 second //
+
+                    Bukkit.getScheduler().runTaskLater(main, new Runnable() {
+                        @Override
+                        public void run() {
+                            player.closeInventory();
+                            player.playSound(player.getLocation(), Sound.UI_TOAST_CHALLENGE_COMPLETE, 0.6f, 0.3f);
+                            eWorld.spawnParticle(Particle.FIREWORKS_SPARK, eLoc, 60, 0,0,0, 0.2);
+                        }
+                    }, 20 * 1);
+
+                    // Used to clear floating item 10 seconds later //
+
                     Bukkit.getScheduler().runTaskLater(main, new Runnable() {
                         @Override
                         public void run() {
@@ -89,7 +99,7 @@ public class Animation extends BukkitRunnable {
                 }
             }
         } else {
-            player.playSound(player.getLocation(), Sound.BLOCK_NOTE_BLOCK_CHIME, 0.6f, soundLevel += 0.1);
+            player.playSound(player.getLocation(), Sound.BLOCK_NOTE_BLOCK_CHIME, 0.6f, soundLevel += 0.1); // Increase sound pitch depending of the animation progress //
 
             YmlConfiguration ymlConfiguration = new YmlConfiguration(main);
             Random random = new Random();

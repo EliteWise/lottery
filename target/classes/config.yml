@@ -16,7 +16,7 @@ npc-name: "Lottery"
 
 token-type: HEART_OF_THE_SEA
 
-# These items will be display in lottery inventory and in the Ender Chest
+# These items will be displayed in the lottery inventory and in the Ender Chest
 # Keys are rewards and values are the number of fragments to get this item
 
 items:

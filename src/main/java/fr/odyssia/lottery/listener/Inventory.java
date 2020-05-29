@@ -13,6 +13,7 @@ import org.bukkit.enchantments.Enchantment;
 import org.bukkit.entity.Entity;
 import org.bukkit.entity.EntityType;
 import org.bukkit.entity.Player;
+import org.bukkit.entity.Villager;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
 import org.bukkit.event.block.Action;
@@ -46,6 +47,12 @@ public class Inventory implements Listener {
 
         if (entity.getType() == EntityType.VILLAGER && entity.getCustomName().equalsIgnoreCase(ymlConfiguration.getNpcName())) {
             e.setCancelled(true);
+
+            JsonRequest jsonRequest = new JsonRequest(main);
+
+            // Make sure player account exist to avoid errors //
+            jsonRequest.createFileAccount(player);
+
             org.bukkit.inventory.Inventory inv = Bukkit.createInventory(null, 45, Constants.LOTTERY_INVENTORY_NAME);
 
             ItemCreator itemCreator = new ItemCreator();
@@ -69,6 +76,8 @@ public class Inventory implements Listener {
             }
         }
     }
+
+    // This method is used to get in-game item tokens specified is config.yml, it's the common usage of tokens //
 
     public int getTokens(Player player, YmlConfiguration ymlConfiguration) {
         int amount = 0;
@@ -100,7 +109,9 @@ public class Inventory implements Listener {
 
                 if (jsonRequest.getTokens(player) > 0){
                     jsonRequest.removeToken(player, main.getConfig().getInt("payment-token", 1));
-                    e.getInventory().remove(Material.SUNFLOWER);
+                    e.getInventory().remove(Material.getMaterial(ymlConfiguration.getTokenType()));
+
+                    // Beginning of the Animation //
 
                     Animation mainSystem = new Animation(main, player, inventory, ymlConfiguration.getAnimationDuration());
                     mainSystem.runTaskTimer(main, 10, ymlConfiguration.getAnimationSpeed());
@@ -111,16 +122,24 @@ public class Inventory implements Listener {
             }
             e.setCancelled(true);
         } else if(e.getView().getTitle().equalsIgnoreCase(Constants.FRAGMENT_INVENTORY_NAME)) {
+
+            // Barrier is only used when a player don't have fragments //
+
+            if(item.getType() == Material.BARRIER) {
+                e.setCancelled(true);
+                return;
+            }
+
             YmlConfiguration ymlConfiguration = new YmlConfiguration(main);
             JsonRequest jsonRequest = new JsonRequest(main);
 
             String itemName = item.getType().name();
             int playerFragments = jsonRequest.getFragments(player, itemName);
-            int limitFragments = ymlConfiguration.getFragments(itemName);
+            int limitFragments = ymlConfiguration.getFragment(itemName);
 
             for(String materialName : ymlConfiguration.getItems()) {
                 if(itemName.equals(materialName)) {
-                    if((playerFragments != 0) && (playerFragments % limitFragments == 0) || (playerFragments > limitFragments)) {
+                    if((playerFragments != 0) && (playerFragments % limitFragments == 0) || (playerFragments > limitFragments)) { // Player can reach the fragments limit
                         item.setAmount(1);
 
                         ItemMeta itemMeta = item.getItemMeta();
@@ -139,37 +158,50 @@ public class Inventory implements Listener {
 
     }
 
-
     // FRAGMENT INVENTORY //
 
     @EventHandler
     public void onClickOnEnderChest(PlayerInteractEvent e) throws IOException {
         Player player = e.getPlayer();
         Block block = e.getClickedBlock();
+
         if (e.getAction() == Action.RIGHT_CLICK_BLOCK && block.getType() == Material.ENDER_CHEST) {
-            e.setCancelled(true);
-            org.bukkit.inventory.Inventory fragmentInventory = Bukkit.createInventory(null, 54, Constants.FRAGMENT_INVENTORY_NAME);
-            player.openInventory(fragmentInventory);
 
-            YmlConfiguration ymlConfiguration = new YmlConfiguration(main);
-            JsonRequest jsonRequest = new JsonRequest(main);
+            // Check if a villager is near clicked EnderChest, to allow basic usage if not //
 
-            int index = 0;
+            List<Entity> nearEntities = player.getWorld().getEntities();
 
-            for(String material : ymlConfiguration.getItems()) {
-                int playerFragments = jsonRequest.getFragments(player, material);
+            for (Entity entities : nearEntities) {
+                if (entities instanceof Villager && entities.getLocation().distance(block.getLocation()) <= 3) {
+                    e.setCancelled(true);
 
-                ItemStack item = new ItemStack(playerFragments == 0 ? Material.BARRIER : Material.getMaterial(material),
-                        playerFragments == 0 ? 1 : playerFragments);
-                ItemMeta itemMeta = item.getItemMeta();
+                    YmlConfiguration ymlConfiguration = new YmlConfiguration(main);
+                    JsonRequest jsonRequest = new JsonRequest(main);
 
-                List<String> description = new ArrayList<>();
-                description.add("§eFragments: §f" + playerFragments + "§e/§f" + ymlConfiguration.getFragments(material));
-                description.add("§7Click to receive");
+                    // Make sure player account exist to avoid errors //
+                    jsonRequest.createFileAccount(player);
 
-                itemMeta.setLore(description);
-                item.setItemMeta(itemMeta);
-                fragmentInventory.setItem(index++, item);
+                    org.bukkit.inventory.Inventory fragmentInventory = Bukkit.createInventory(null, 54, Constants.FRAGMENT_INVENTORY_NAME);
+                    player.openInventory(fragmentInventory);
+
+                    int index = 0;
+
+                    for (String material : ymlConfiguration.getItems()) {
+                        int playerFragments = jsonRequest.getFragments(player, material);
+
+                        ItemStack item = new ItemStack(playerFragments == 0 ? Material.BARRIER : Material.getMaterial(material),
+                                playerFragments == 0 ? 1 : playerFragments);
+                        ItemMeta itemMeta = item.getItemMeta();
+
+                        List<String> description = new ArrayList<>();
+                        description.add("§eFragments: §f" + playerFragments + "§e/§f" + ymlConfiguration.getFragment(material));
+                        description.add("§7Click to receive");
+
+                        itemMeta.setLore(description);
+                        item.setItemMeta(itemMeta);
+                        fragmentInventory.setItem(index++, item);
+                    }
+                }
             }
         }
     }
@@ -178,8 +210,9 @@ public class Inventory implements Listener {
     public void onPlayerJoin(PlayerJoinEvent e) throws IOException {
         Player player = e.getPlayer();
         JsonRequest jsonRequest = new JsonRequest(main);
+
+        // Make sure player account exist to avoid errors //
         jsonRequest.createFileAccount(player);
-        jsonRequest.addFragment(player, "BLAZE_POWDER");
     }
 
 }
