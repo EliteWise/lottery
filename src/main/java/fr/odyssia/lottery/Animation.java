@@ -39,13 +39,15 @@ public class Animation extends BukkitRunnable {
     }
 
     int count = 0;
-    float soundLevel = 0f;
+    float soundPitch = 0f;
 
     @Override
     public void run() {
 
         if (count == animationDuration) {
             cancel();
+
+            YmlConfiguration ymlConfiguration = new YmlConfiguration(main);
 
             // Fill border of the inventory at the end of the Animation //
 
@@ -58,6 +60,8 @@ public class Animation extends BukkitRunnable {
             } catch (IOException e) {
                 e.printStackTrace();
             }
+
+            player.sendMessage(ymlConfiguration.getFragmentMessage(rewardFragment.getType().name()));
 
             // Spawn floating item on the EnderChest, depending on the position of the villager //
 
@@ -83,8 +87,8 @@ public class Animation extends BukkitRunnable {
                         @Override
                         public void run() {
                             player.closeInventory();
-                            player.playSound(player.getLocation(), Sound.UI_TOAST_CHALLENGE_COMPLETE, 0.6f, 0.3f);
-                            eWorld.spawnParticle(Particle.FIREWORKS_SPARK, eLoc, 60, 0,0,0, 0.2);
+                            player.playSound(player.getLocation(), Sound.UI_TOAST_CHALLENGE_COMPLETE, ymlConfiguration.enableSounds() ? 0.6f : 0.0f, 0.3f);
+                            eWorld.spawnParticle(Particle.valueOf(ymlConfiguration.getParticlesType()), eLoc, ymlConfiguration.getParticlesNumber(), 0,0,0, ymlConfiguration.getParticlesSpeed());
                         }
                     }, 20 * 1);
 
@@ -99,18 +103,19 @@ public class Animation extends BukkitRunnable {
                 }
             }
         } else {
-            player.playSound(player.getLocation(), Sound.BLOCK_NOTE_BLOCK_CHIME, 0.6f, soundLevel += 0.1); // Increase sound pitch depending of the animation progress //
-
             YmlConfiguration ymlConfiguration = new YmlConfiguration(main);
+
+            player.playSound(player.getLocation(), Sound.BLOCK_NOTE_BLOCK_CHIME, ymlConfiguration.enableSounds() ? 0.6f : 0.0f, soundPitch += 0.1); // Increase sound pitch depending of the animation progress //
+
             Random random = new Random();
             Set<String> itemsList = ymlConfiguration.getItems();
             int itemrandom = random.nextInt(itemsList.size());
             List<String> list = new ArrayList<>(itemsList);
 
             rewardFragment = new ItemStack(Material.getMaterial(list.get(itemrandom)));
-            inventory.setItem(21, rewardFragment);
-            inventory.setItem(22, rewardFragment);
-            inventory.setItem(23, rewardFragment);
+            for(int i = 1; i < 4; i++) { // Display 3 same items in the center of the inventory
+                inventory.setItem(20 + i, rewardFragment);
+            }
         }
         count++;
     }

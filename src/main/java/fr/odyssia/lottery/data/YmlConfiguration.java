@@ -32,6 +32,22 @@ public class YmlConfiguration {
 
     public String getTokenType() { return main.getConfig().getString("token-type"); }
 
+    public String getFragmentMessage(String fragment) {
+        return main.getConfig().getString("fragment-message").replace("{FRAGMENT}", fragment.replace("_", " ")).replace("&", "§");
+    }
+
+    public String getRewardMessage(String reward) {
+        return main.getConfig().getString("reward-message").replace("{REWARD}", reward.replace("_", " ")).replace("&", "§");
+    }
+
+    public boolean enableSounds() { return main.getConfig().getBoolean("enable-sounds"); }
+
+    public String getParticlesType() { return main.getConfig().getString("particles.type"); }
+
+    public int getParticlesNumber() { return main.getConfig().getInt("particles.number"); }
+
+    public float getParticlesSpeed() { return (float) main.getConfig().getDouble("particles.speed"); }
+
     public Map<String, Object> getFragments() {
         return main.getConfig().getConfigurationSection("items").getValues(false);
     }

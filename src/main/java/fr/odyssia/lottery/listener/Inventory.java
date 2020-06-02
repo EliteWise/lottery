@@ -1,5 +1,6 @@
 package fr.odyssia.lottery.listener;
 
+import com.sun.istack.internal.NotNull;
 import fr.odyssia.lottery.Animation;
 import fr.odyssia.lottery.Main;
 import fr.odyssia.lottery.data.JsonRequest;
@@ -92,7 +93,7 @@ public class Inventory implements Listener {
     }
 
     @EventHandler
-    public void onClickInInventory(InventoryClickEvent e) throws IOException {
+    public void onClickInInventory(@NotNull InventoryClickEvent e) throws IOException {
         Player player = (Player) e.getWhoClicked();
         ItemStack item = e.getCurrentItem();
         org.bukkit.inventory.Inventory inventory = e.getInventory();
@@ -148,7 +149,7 @@ public class Inventory implements Listener {
 
                         player.getInventory().addItem(item);
                         player.closeInventory();
-                        player.sendMessage("§aCongratulations ! §e§l" + itemName.replace("_", " ") + " §aadded to your inventory.");
+                        player.sendMessage(ymlConfiguration.getRewardMessage(itemName));
                         jsonRequest.removeFragment(player, itemName);
                     }
                 }

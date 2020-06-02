@@ -16,6 +16,21 @@ npc-name: "Lottery"
 
 token-type: HEART_OF_THE_SEA
 
+# To add customs colors, simply use color codes like below
+
+fragment-message: "&aCongratulations! &e&l{FRAGMENT}&a fragment added to your ender chest."
+
+reward-message: "&aCongratulations! &e&l{REWARD}&a added to your inventory."
+
+enable-sounds: true
+
+# Particles list: https://mcreator.net/wiki/particles-ids
+
+particles:
+  type: FIREWORKS_SPARK
+  number: 60
+  speed: 0.2
+
 # These items will be displayed in the lottery inventory and in the Ender Chest
 # Keys are rewards and values are the number of fragments to get this item
 
